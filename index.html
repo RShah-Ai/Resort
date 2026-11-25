@@ -102,23 +102,14 @@
 </a>
 <div class="toast" id="toast"></div>
 
-<div class="modal" id="loginModal"><div class="login-card"><div class="login-brand"><div class="monogram">A</div><h2>Aurelia Grand</h2><p>RESORT & RETREAT</p></div><h3>Welcome Back</h3><p style="text-align:center;color:#7c8791;font-size:13px">Sign in to access your account</p><form id="loginForm"><div class="field"><label>Email address</label><input id="loginEmail" type="email" required placeholder="Enter your email"></div><div class="field"><label>Password</label><input id="loginPassword" type="password" required placeholder="Enter your password"></div><button class="btn" type="submit">Sign In</button></form><p class="login-note">Your account gives you access to your profile and password settings.</p></div></div>
 <div class="account-panel" id="accountPanel"><h3>My Account</h3><p id="accountEmail" style="font-size:13px;color:#68727b"></p><div class="field"><label>Current password</label><input id="currentPass" type="password" placeholder="Current password"></div><div class="field"><label>New password</label><input id="newPass" type="password" placeholder="New password"></div><div class="field"><label>Confirm new password</label><input id="confirmPass" type="password" placeholder="Confirm new password"></div><div class="account-actions"><button class="small-btn" onclick="changePassword()">Change Password</button><button class="small-btn" onclick="logout()">Sign Out</button><button class="small-btn" onclick="closeAccount()">Close</button></div><p class="notice">Password settings in this browser preview are stored locally. Connect a secure authentication service before using real customer accounts.</p></div>
 <script>
-const DEFAULT_EMAIL='aureliagrand@gmail.com', DEFAULT_PASSWORD='Aurelia@123';
+//const DEFAULT_EMAIL='aureliagrand@gmail.com', DEFAULT_PASSWORD='Aurelia@123';
 const WA_NUMBER='9408926828'; // Replace with the resort WhatsApp number, digits only.
-let signedIn=false;
+let signedIn=true;
 const $=id=>document.getElementById(id);
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3200)}
-function getEmail(){return localStorage.getItem('aurelia_email')||DEFAULT_EMAIL}
-function getPassword(){return localStorage.getItem('aurelia_password')||DEFAULT_PASSWORD}
-function init(){ $('year').textContent=new Date().getFullYear();$('waLink').href='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent('Hello, I would like to enquire about a booking at Aurelia Grand Resort.'); if(sessionStorage.getItem('aurelia_signedin')==='yes'){$('loginModal').classList.add('hidden');signedIn=true}}
-$('loginForm').addEventListener('submit',e=>{e.preventDefault();const email=$('loginEmail').value.trim(),pass=$('loginPassword').value;if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Please enter correct email.');return}if(email.toLowerCase()!==getEmail().toLowerCase()){toast('Please enter correct email.');return}if(pass!==getPassword()){toast('Please enter correct password.');return}signedIn=true;sessionStorage.setItem('aurelia_signedin','yes');$('loginModal').classList.add('hidden');toast('Login successful.')});
-function openAccount(){if(!signedIn){toast('Please sign in to open your account.');$('loginModal').classList.remove('hidden');return}$('accountEmail').textContent=getEmail();$('accountPanel').classList.add('open')}
-function closeAccount(){$('accountPanel').classList.remove('open')}
-function logout(){signedIn=false;sessionStorage.removeItem('aurelia_signedin');closeAccount();$('loginModal').classList.remove('hidden');toast('You have signed out.')}
-function changePassword(){const old=$('currentPass').value,n=$('newPass').value,c=$('confirmPass').value;if(old!==getPassword()){toast('Please enter correct password.');return}if(n.length<6){toast('New password must be at least 6 characters.');return}if(n!==c){toast('New password and confirm password do not match.');return}localStorage.setItem('aurelia_password',n);$('currentPass').value=$('newPass').value=$('confirmPass').value='';toast('Password changed successfully.')}
-function selectRoom(room){$('roomSelect').value=room}
+function init(){ $('year').textContent=new Date().getFullYear();$('waLink').href='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent('Hello, I would like to enquire about a booking at Aurelia Grand Resort.'); }function selectRoom(room){$('roomSelect').value=room}
 function saveRecord(key,obj){const arr=JSON.parse(localStorage.getItem(key)||'[]');arr.push({...obj,submittedAt:new Date().toLocaleString()});localStorage.setItem(key,JSON.stringify(arr))}
 $('bookingForm').addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntries(new FormData(e.target).entries());saveRecord('aurelia_bookings',data);toast('Your booking enquiry has been received.');e.target.reset()});
 $('feedbackForm').addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntries(new FormData(e.target).entries());saveRecord('aurelia_feedback',data);toast('Thank you. Your feedback has been submitted.');e.target.reset()});
